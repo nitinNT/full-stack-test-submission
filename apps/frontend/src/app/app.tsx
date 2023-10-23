@@ -1,7 +1,7 @@
 import Navbar from './components/Navbar/navbar';
 import JobList from './components/JobList/job-list';
 
-import { Route, Routes, Link } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 export function App() {
   return (
@@ -9,14 +9,6 @@ export function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<JobList />} />
-        <Route
-          path="/page-2"
-          element={
-            <div>
-              <Link to="/">Click here to go back to root page.</Link>
-            </div>
-          }
-        />
       </Routes>
     </div>
   );

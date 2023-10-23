@@ -1,5 +1,3 @@
-const API_BASE_URL = '';
-
 const getJobs = async (page: number) => {
   const response = await fetch(`/api/jobs?page=${page}`);
   if (!response.ok) {
@@ -18,5 +16,4 @@ const getJobById = async (jobId: number) => {
   return data;
 };
 
-// Export the functions
 export { getJobs, getJobById };

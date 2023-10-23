@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
 import { getJobById } from '../../services/api';
-import Markdown from 'react-markdown';
+import ReactMarkDown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faBriefcase,
+  faLocationDot,
+  faWallet,
+} from '@fortawesome/free-solid-svg-icons';
 
 type JobCardProps = {
   id: number;
@@ -12,11 +19,17 @@ type JobCardProps = {
   location: string;
 };
 const JobDetailsModal = (props: any) => {
-  const [s, se] = useState();
+  const [jobDetails, setJobDetails] = useState({
+    title: '',
+    company: '',
+    description: '',
+    details: '',
+    salary: '',
+    location: '',
+  });
   useEffect(() => {
-    getJobById(props.id).then((r) => {
-      console.log(r);
-      se(r.details);
+    getJobById(props.id).then((resp) => {
+      setJobDetails(resp);
     });
   }, [props.id]);
   return (
@@ -35,20 +48,34 @@ const JobDetailsModal = (props: any) => {
           <div className="relative transform bg-white text-left shadow-xl rounded-lg">
             <div className="p-4 sm:p-6">
               <h3 className="text-2xl font-semibold text-gray-900">
-                {props.title}
+                {jobDetails.title}
               </h3>
-              <p className="text-gray-500 mt-2">
-                {props.company} , {props.location}
-              </p>
-              <p className="text-gray-500 mt-2">{props.salary}</p>
-              <Markdown className="overflow-hidden">{s}</Markdown>
-              <div className="mt-4 overflow-hidden">{props.description}</div>
+
+              <span className="flex items-center space-x-2 mt-2">
+                <FontAwesomeIcon icon={faBriefcase} />
+                <span className="mr-7">{jobDetails.company}</span>
+              </span>
+              <span className="flex items-center space-x-2 mt-2">
+                <FontAwesomeIcon icon={faLocationDot} />
+                <span className="mr-7">{jobDetails.location}</span>
+              </span>
+              <span className="flex items-center space-x-2 mt-2 mb-2">
+                <FontAwesomeIcon icon={faWallet} />
+                <span className="mr-7">{jobDetails.salary}</span>
+              </span>
+
+              <hr />
+              <ReactMarkDown
+                className="prose lg:prose-l mt-2"
+                children={jobDetails.details}
+                remarkPlugins={[remarkGfm]}
+              />
             </div>
 
             <div className="bg-gray-100 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 justify-equal">
               <button
                 type="button"
-                className="mt-3 w-full sm:w-auto inline-flex justify-center rounded-md bg-blue-600 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:bg-blue-400"
+                className="mt-3 w-full sm:w-auto inline-flex justify-center rounded-md bg-blue-600 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:bg-blue-900"
               >
                 Apply
               </button>
@@ -87,7 +114,8 @@ export default function JobCard(props: JobCardProps) {
             {props.description}
           </p>
         </div>
-        <div className="flex flex-row">
+
+        <div className="flex flex-row justify-equal">
           {props.skills?.split(',').map((e, index) => (
             <div
               key={index}

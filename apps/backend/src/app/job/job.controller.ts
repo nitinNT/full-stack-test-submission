@@ -1,32 +1,23 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { JobService } from './job.service';
-import { CreateJobDto } from '../dtos/create-job.dto';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller()
+@ApiTags()
 export class JobController {
+  constructor(private readonly jobService: JobService) {}
 
-    constructor(private readonly jobService: JobService) {
-    }
+  @Get('jobs')
+  @ApiOperation({ summary: 'Get all jobs' })
+  async getAllJobs(@Query('page') page = 1, @Query('limit') limit = 10) {
+    const jobs = await this.jobService.getAllJobs({ page, limit });
+    return jobs;
+  }
 
-
-    @Get('jobs')
-    async getAllJobs(@Query('page') page = 1,
-        @Query('limit') limit = 10,
-        @Query('category') category: string) {
-        const jobs = await this.jobService.getAllJobs({ page, limit, category });
-        return jobs;
-    }
-
-    @Get('job/:id')
-    async getJob(@Param('id') id: number) {
-        const job = await this.jobService.getJobById(id);
-        return job;
-    }
-
-    @Post('job')
-    async createJob(@Body() createJobDto: CreateJobDto) {
-        const job = await this.jobService.createJob(createJobDto);
-        return job;
-    }
-
+  @Get('job/:id')
+  @ApiOperation({ summary: 'Get a job by ID' })
+  async getJob(@Param('id') id: number) {
+    const job = await this.jobService.getJobById(id);
+    return job;
+  }
 }

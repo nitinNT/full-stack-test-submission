@@ -12,8 +12,8 @@ import { Job } from './job/job.entity';
       type: 'sqlite',
       database: 'job-database.sqlite',
       entities: [Job],
-      synchronize: true, // Set to false in production
-      logging: true,
+      synchronize: true,
+      logging: false,
     }),
     JobModule,
   ],
